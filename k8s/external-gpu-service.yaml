@@ -1,0 +1,22 @@
+# This maps the internal K8s service to your external Windows GPU IP
+apiVersion: v1
+kind: Service
+metadata:
+  name: inference-provider
+  namespace: ai-platform
+spec:
+  ports:
+    - protocol: TCP
+      port: 11434
+      targetPort: 11434
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: inference-provider
+  namespace: ai-platform
+subsets:
+  - addresses:
+      - ip: 192.168.1.100 # <--- UPDATE THIS with your Windows/Linux PC IP that has Ollama
+    ports:
+      - port: 11434

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-analyst-worker
+  namespace: ai-platform
+  labels:
+    app: market-analyst
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-analyst
+  template:
+    metadata:
+      labels:
+        app: market-analyst
+    spec:
+      containers:
+      - name: agent-worker
+        image: <YOUR_DOCKERID>/agent-worker:v5 # Ensure you import this image into Microk8s
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: OLLAMA_BASE_URL
+            value: "http://inference-provider.ai-platform.svc.cluster.local:11434"
+          - name: TEMPORAL_HOST
+            value: "temporal-stack-frontend.default.svc.cluster.local:7233"
+          - name: TEMPORAL_TASK_QUEUE
+            value: "finance-analytics-v1"
